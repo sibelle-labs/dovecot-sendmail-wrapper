@@ -5,6 +5,7 @@ Ein robuster `/usr/sbin/sendmail`-Wrapper für Dovecot + Sieve (Vacation), der P
 ## Problem
 
 Dovecot erzeugt Vacation-Mails über Sieve, die zwar RFC-konform sind, aber nicht immer einen `To:`-Header in den ersten Headerzeilen enthalten. Der `sendmail -t` Befehl von Postfix erkennt so keine Empfänger und versendet die Mail fehlerhaft oder gar nicht.
+Das Problem ist nicht neu, aber doch für mich unter Oracle Linux 9.x mit Dovecot 2.3.16 und Postfix 3.5.25 !
 
 ## Lösung
 
@@ -22,8 +23,14 @@ Dieses Wrapper-Skript:
 cp sendmail-wrapper.sh /usr/local/bin/sendmail-wrapper.sh
 chmod +x /usr/local/bin/sendmail-wrapper.sh
 
-1. im local.conf
+2. im local.conf
+
 protocol lmtp {
+  mail_plugins = sieve
+  sendmail_path = /usr/local/bin/sendmail-wrapper.sh
+}
+# oder
+protocol lda {
   mail_plugins = sieve
   sendmail_path = /usr/local/bin/sendmail-wrapper.sh
 }
